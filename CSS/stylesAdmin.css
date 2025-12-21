@@ -1,0 +1,64 @@
+/* =========================
+   VARIABLES
+========================= */
+:root {
+  --black: #0f0f0f;
+  --orange: #ff7a00;
+  --white: #ffffff;
+  --gray: #f5f5f5;
+}
+
+/* =========================
+   BASE
+========================= */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--gray);
+  color: var(--black);
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header {
+  background-color: var(--black);
+  color: var(--white);
+  padding: 1rem;
+  text-align: center;
+}
+
+/* =========================
+   LISTA TURNOS
+========================= */
+.lista-turnos {
+  background-color: var(--white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.lista-turnos li {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.lista-turnos li:last-child {
+  border-bottom: none;
+}
+
+/* =========================
+   ESTADO VACÍO
+========================= */
+.lista-turnos:empty::after {
+  content: "No hay turnos registrados";
+  display: block;
+  padding: 1rem;
+  text-align: center;
+  color: #777;
+}

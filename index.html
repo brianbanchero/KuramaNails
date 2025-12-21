@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Kurama Nails</title>
+    <link rel="stylesheet" href="CSS/stylesIndex.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-center">
+        <img src="assets/img/iconoKurama.png" alt="Kurama Logo" />
+      </div>
+      <nav>
+        <a href="admin.html" hidden>Admin</a>
+      </nav>
+    </header>
+
+    <div class="header-divider"></div>
+
+    <main class="layout-principal fade-in">
+      <!-- HERO IZQUIERDO -->
+      <section class="hero hero-lateral">
+        <div class="hero-content">
+          <h2>Uñas perfectas, sin esperas</h2>
+          <p>Reservá tu turno online de forma rápida y sencilla</p>
+        </div>
+      </section>
+
+      <!-- SERVICIOS DERECHA -->
+      <section class="servicios-columna" id="serviciosContainer">
+        <!-- Cards por JS -->
+      </section>
+    </main>
+
+    <!-- OVERLAY -->
+    <div id="overlay" class="overlay oculto">
+      <!-- MODAL -->
+      <div id="modalReserva" class="modalReserva modal oculto">
+        <div class="modal-header">
+          <button id="btnVolver" class="icon-btn oculto">←</button>
+          <button id="cerrarModal" class="icon-btn">✕</button>
+        </div>
+
+        <!-- RESUMEN SERVICIO -->
+        <div class="modal-servicio">
+          <div class="modal-servicio-info">
+            <h3 id="modalServicioNombre">Servicio</h3>
+
+            <div class="modal-precio-linea">
+              <strong id="modalServicioPrecio">$0</strong>
+              <span id="modalServicioSenia" class="texto-gris"></span>
+              <span class="texto-gris">
+                · <span class="icono">⏱</span> 90 min
+              </span>
+            </div>
+
+            <!-- Fecha y hora (oculto hasta que se seleccione) -->
+            <div id="modalFechaHora" class="modal-fecha-hora oculto">
+              <span class="icono">📅</span>
+              <span id="modalFechaTexto"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFESIONAL -->
+        <div class="modal-section">
+          <h4>Te atiende:</h4>
+
+          <div class="profesionales">
+            <button class="profesional activo">Cielo</button>
+          </div>
+        </div>
+
+        <!-- DÍA -->
+        <div class="modal-section">
+          <div class="modal-dia-header">
+            <h4>¿Qué día?</h4>
+            <div class="mes-control">
+              <button class="flecha" id="prevMes"><</button>
+              <span id="mesActual">Diciembre 2025</span>
+              <button class="flecha" id="nextMes">></button>
+            </div>
+          </div>
+
+          <div class="dias-wrapper">
+            <div class="dias-scroll" id="diasScroll">
+              <!-- Días generados por JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- HORA -->
+        <div class="modal-section">
+          <h4>¿A qué hora?</h4>
+
+          <div class="tabs-hora">
+            <button class="tab-hora activo" data-turno="manana">Mañana</button>
+            <button class="tab-hora" data-turno="tarde">Tarde</button>
+          </div>
+
+          <div class="horas-grid" id="horasGrid">
+            <!-- Horarios por JS -->
+          </div>
+
+          <p id="sinHoras" class="sin-horas oculto">No hay horas disponibles</p>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-continuar disabled">Continuar</button>
+        </div>
+
+        <!-- =====================
+            PASO CONTINUAR
+        ===================== -->
+        <div id="pasoContinuar" class="paso-continuar oculto">
+          <!-- RESUMEN -->
+          <div class="resumen-final">
+            <h4 id="resumenServicio"></h4>
+            <p id="resumenPrecio"></p>
+            <p id="resumenProfesional"></p>
+            <p id="resumenFechaHora"></p>
+          </div>
+
+          <!-- FORMULARIO -->
+          <div class="form-contacto">
+            <h4>Información de contacto</h4>
+
+            <div class="form-grid">
+              <input type="text" id="nombre" placeholder="Nombre *" />
+              <input type="text" id="apellido" placeholder="Apellido *" />
+              <input type="email" id="email" placeholder="Email *" />
+              <div class="telefono-wrapper">
+                <div class="codigo-pais">
+                  <span class="bandera">🇦🇷</span>
+                  <span class="codigo">+54</span>
+                </div>
+                <input
+                  type="tel"
+                  id="telefono"
+                  placeholder="Teléfono *"
+                  inputmode="numeric"
+                />
+              </div>
+              <input type="text" id="dni" placeholder="DNI *" />
+            </div>
+
+            <textarea
+              id="observaciones"
+              placeholder="Observaciones (opcional)"
+            ></textarea>
+          </div>
+
+          <!-- FOOTER FINAL -->
+          <div class="footer-pago">
+            <div class="footer-resumen" id="footerResumen"></div>
+
+            <button id="btnPagar" class="btn-pagar disabled">
+              Pagar y agendar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="JS/modalReserva.js"></script>
+    <script src="JS/servicios.js"></script>
+    <script src="JS/animaciones.js"></script>
+  </body>
+</html>
