@@ -20,7 +20,7 @@ function closeModal() {
   resetModal();
 }
 
-window.abrirModalReserva = function (servicio) {
+window.abrirModalReserva = async function (servicio) {
   if (!overlay || !modal) {
     console.error("Overlay o modal no encontrado");
     return;
@@ -54,9 +54,9 @@ window.abrirModalReserva = function (servicio) {
   modal.classList.remove("oculto");
 
   window.servicioSeleccionado = servicio;
+  await generarDias();
 
   resetModal();
-  generarHoras("manana");
 };
 
 if (btnCerrar) btnCerrar.addEventListener("click", closeModal);
@@ -76,7 +76,7 @@ function mostrarFechaHora(fechaTexto) {
   contenedor.classList.remove("oculto");
 }
 
-function generarDias() {
+async function generarDias() {
   diasScroll.innerHTML = "";
 
   const year = fechaBase.getFullYear();
@@ -96,47 +96,74 @@ function generarDias() {
     "Noviembre",
     "Diciembre",
   ];
+
   const diasSemana = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
   mesActual.textContent = `${nombresMes[month]} ${year}`;
 
   const totalDias = new Date(year, month + 1, 0).getDate();
 
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
   for (let d = 1; d <= totalDias; d++) {
     const fecha = new Date(year, month, d);
     const diaSemana = fecha.getDay();
 
     const btn = document.createElement("button");
-    btn.className = "dia-btn";
+    btn.classList.add("dia-btn");
+
     btn.innerHTML = `
       <span>${diasSemana[diaSemana]}</span>
       <strong>${d}</strong>
     `;
 
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
+    let bloqueado = false;
 
+    // 🔒 1. Días pasados
     if (fecha < hoy) {
-      btn.classList.add("inactivo");
+      bloqueado = true;
     }
 
-    // (por ahora) bloqueamos solo domingos visualmente
+    // 🔒 2. Domingos
     if (diaSemana === 0) {
-      btn.classList.add("inactivo");
+      bloqueado = true;
     }
 
-    btn.addEventListener("click", () => {
-      document
-        .querySelectorAll(".dia-btn.activo")
-        .forEach((b) => b.classList.remove("activo"));
+    // 🔒 3. Feriados (si ya lo tenés implementado)
+    if (typeof esFeriado === "function" && esFeriado(fecha)) {
+      bloqueado = true;
+    }
 
-      btn.classList.add("activo");
+    // 🔒 4. Día completo (solo si no está bloqueado antes)
+    if (!bloqueado) {
+      const disponible = await diaTieneHorasDisponibles(fecha);
+      if (!disponible) {
+        bloqueado = true;
+      }
+    }
 
-      // Guardamos selección (se usa en el paso 4)
-      window.fechaSeleccionada = fecha;
+    if (bloqueado) {
+      btn.classList.add("inactivo");
+      btn.disabled = true;
+      btn.title = "No hay horarios disponibles este día";
+    } else {
+      btn.addEventListener("click", async () => {
+        document
+          .querySelectorAll(".dia-btn.activo")
+          .forEach((b) => b.classList.remove("activo"));
 
-      actualizarResumenFechaHora();
-    });
+        btn.classList.add("activo");
+
+        window.fechaSeleccionada = fecha;
+        window.horaSeleccionada = null;
+
+        horasGrid.innerHTML = "";
+
+        await generarHoras("manana");
+        actualizarResumenFechaHora();
+      });
+    }
 
     diasScroll.appendChild(btn);
   }
@@ -165,16 +192,22 @@ function horaEsValida(hora, ultimoTurno) {
   return hora <= ultimoTurno;
 }
 
-function generarHoras(turno) {
+async function generarHoras(turno) {
   horasGrid.innerHTML = "";
   sinHoras.classList.add("oculto");
 
   const servicio = window.servicioSeleccionado;
-  if (!servicio) return;
+  if (!servicio || !window.fechaSeleccionada) return;
+
+  const fecha = window.fechaSeleccionada.toISOString().split("T")[0];
+
+  const horasOcupadas = await obtenerHorasOcupadas(fecha);
+
+  const horasOcupadasNormalizadas = horasOcupadas.map((h) => h.slice(0, 5));
 
   const listaBase = horariosBase[turno];
-  const horariosFiltrados = listaBase.filter((hora) =>
-    horaEsValida(hora, servicio.ultimoTurno)
+  const horariosFiltrados = listaBase.filter(
+    (hora) => hora <= servicio.ultimoTurno
   );
 
   if (horariosFiltrados.length === 0) {
@@ -187,13 +220,20 @@ function generarHoras(turno) {
     btn.className = "hora-btn";
     btn.textContent = hora;
 
+    if (horasOcupadasNormalizadas.includes(hora)) {
+      btn.classList.add("inactivo");
+    }
+
     btn.addEventListener("click", () => {
+      if (btn.classList.contains("inactivo")) {
+        return;
+      }
+
       document
         .querySelectorAll(".hora-btn.activo")
         .forEach((b) => b.classList.remove("activo"));
 
       btn.classList.add("activo");
-
       window.horaSeleccionada = hora;
 
       actualizarResumenFechaHora();
@@ -279,6 +319,9 @@ function resetModal() {
   document
     .querySelectorAll(".hora-btn.activo")
     .forEach((b) => b.classList.remove("activo"));
+
+  // Reset del calendario
+  fechaBase = new Date();
 
   // Tabs hora
   document
@@ -443,6 +486,99 @@ function validarFormulario() {
   const btnPagar = document.getElementById("btnPagar");
   if (valido) btnPagar.classList.remove("disabled");
   else btnPagar.classList.add("disabled");
+}
+
+async function obtenerHorasOcupadas(fecha) {
+  const profesional = "Cielo";
+
+  console.log("Consultando horas ocupadas para:", fecha);
+
+  try {
+    const response = await fetch(
+      `http://localhost:3000/turnos/ocupados?fecha=${fecha}&profesional=${profesional}`
+    );
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+
+    console.log("Horas ocupadas recibidas:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Error al obtener horas ocupadas", error);
+    return [];
+  }
+}
+
+async function diaTieneHorasDisponibles(fecha) {
+  const servicio = window.servicioSeleccionado;
+
+  // 🟢 Si todavía no hay servicio elegido,
+  // NO bloqueamos el día
+  if (!servicio) return true;
+
+  const fechaISO = fecha.toISOString().split("T")[0];
+
+  const horasOcupadas = await obtenerHorasOcupadas(fechaISO);
+  const horasOcupadasNormalizadas = horasOcupadas.map((h) => h.slice(0, 5));
+
+  const horasManana = horariosBase.manana.filter(
+    (h) => h <= servicio.ultimoTurno
+  );
+  const horasTarde = horariosBase.tarde.filter(
+    (h) => h <= servicio.ultimoTurno
+  );
+
+  const todasLasHoras = [...horasManana, ...horasTarde];
+
+  return todasLasHoras.some(
+    (hora) => !horasOcupadasNormalizadas.includes(hora)
+  );
+}
+
+if (btnPagar) {
+  btnPagar.addEventListener("click", () => {
+    const turno = construirTurnoDesdeFormulario();
+    pagarTurno(turno);
+  });
+}
+
+async function pagarTurno(turno) {
+  const res = await fetch("http://localhost:3000/pagos/crear-preferencia", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ turno }),
+  });
+
+  const data = await res.json();
+
+  window.location.href = data.init_point;
+}
+
+function construirTurnoDesdeFormulario() {
+  return {
+    servicio: window.servicioSeleccionado.nombre,
+    precio: window.servicioSeleccionado.precio,
+    duracion: window.servicioSeleccionado.duracion,
+    profesional: window.profesionalSeleccionado,
+    fecha: window.fechaSeleccionada.toISOString().split("T")[0],
+    hora: window.horaSeleccionada,
+    nombre: document.getElementById("nombre").value,
+    apellido: document.getElementById("apellido").value,
+    email: document.getElementById("email").value,
+    telefono: document.getElementById("telefono").value,
+    dni: document.getElementById("dni").value,
+    observaciones: document.getElementById("observaciones")?.value || "",
+  };
+}
+
+function mostrarExito() {
+  alert("Turno reservado con éxito 🎉");
+
+  closeModal();
 }
 
 // Inicial

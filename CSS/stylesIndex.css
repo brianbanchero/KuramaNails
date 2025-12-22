@@ -2,18 +2,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 body {
   min-height: 100vh;
   color: #111;
-  font-family: 'Segoe UI', sans-serif;
-  background:
-    linear-gradient(
-      rgba(0,0,0,0.75),
-      rgba(0,0,0,0.75)
-    ),
+  font-family: "Segoe UI", sans-serif;
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
     url("/assets/img/fondoNails.jpg") center/cover fixed no-repeat;
 }
 
@@ -90,7 +86,7 @@ body {
   background: rgba(0, 0, 0, 0.85);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
 }
 
 .servicio-card img {
@@ -120,7 +116,6 @@ body {
   cursor: pointer;
   font-weight: bold;
 }
-
 
 .servicio-info h3 {
   color: orange;
@@ -166,7 +161,7 @@ body {
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* SERVICIOS */
@@ -175,7 +170,7 @@ body {
   padding: 1.8rem;
   border-radius: 16px;
   text-align: center;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
   transition: transform 0.3s ease;
 }
 
@@ -231,7 +226,7 @@ body {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,7 +241,7 @@ body {
   max-width: 700px;
   border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
   animation: aparecer 0.3s ease;
 }
 
@@ -386,7 +381,7 @@ body {
   max-width: 720px;
   border-radius: 18px;
   padding: 1.5rem;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
   animation: aparecer 0.25s ease;
 }
 
@@ -462,7 +457,6 @@ body {
 .icono {
   font-size: 0.9rem;
 }
-
 
 /* =====================
    SECCIONES
@@ -581,8 +575,12 @@ body {
 }
 
 .dia-btn.inactivo {
-  opacity: 0.35;
-  pointer-events: none;
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.dia-btn.inactivo:hover {
+  cursor: not-allowed;
 }
 
 /* =====================
@@ -634,8 +632,10 @@ body {
 }
 
 .hora-btn.inactivo {
-  opacity: 0.35;
-  pointer-events: none;
+  background: #eee;
+  color: #999;
+  border-color: #ddd;
+  cursor: not-allowed;
 }
 
 .sin-horas {
@@ -778,7 +778,6 @@ body {
 }
 
 @media (max-width: 768px) {
-
   /* HEADER */
   .header {
     grid-template-columns: 1fr;
