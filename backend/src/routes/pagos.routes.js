@@ -41,52 +41,58 @@ router.post("/crear-preferencia", async (req, res) => {
 
 router.post("/webhook", async (req, res) => {
   try {
-    const { type, data } = req.body;
+    console.log("📩 WEBHOOK RAW BODY:", JSON.stringify(req.body));
+    console.log("📩 WEBHOOK QUERY:", req.query);
 
-    // 1️⃣ Solo nos interesa pagos
-    if (type !== "payment") {
+    const paymentId = req.body?.data?.id || req.query?.id || req.body?.id;
+
+    if (!paymentId) {
+      console.log("⚠️ No se recibió paymentId");
       return res.sendStatus(200);
     }
 
-    const paymentId = data.id;
+    // Consultar pago real
+    let payment;
+    try {
+      const mpResponse = await axios.get(
+        `https://api.mercadopago.com/v1/payments/${paymentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
+          },
+        }
+      );
 
-    // 2️⃣ Consultar pago real a Mercado Pago
-    const mpResponse = await axios.get(
-      `https://api.mercadopago.com/v1/payments/${paymentId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
-        },
-      }
-    );
+      payment = mpResponse.data;
+      console.log("💳 Pago consultado:", payment.status);
+    } catch (err) {
+      console.log("⏳ Pago aún no disponible, reintentando:", paymentId);
+      return res.sendStatus(500);
+    }
 
-    const payment = mpResponse.data;
-
-    // 3️⃣ Solo pagos aprobados
     if (payment.status !== "approved") {
+      console.log("❌ Pago no aprobado:", payment.status);
       return res.sendStatus(200);
     }
 
-    // 4️⃣ Verificar si ya procesamos este pago
-    const pagoExistente = await pool.query(
+    // evitar duplicados
+    const existe = await pool.query(
       "SELECT 1 FROM pagos WHERE payment_id = $1",
       [paymentId]
     );
 
-    if (pagoExistente.rowCount > 0) {
+    if (existe.rowCount > 0) {
+      console.log("🔁 Pago ya procesado");
       return res.sendStatus(200);
     }
 
-    // 5️⃣ Guardar pago (lock)
     await pool.query("INSERT INTO pagos (payment_id, status) VALUES ($1, $2)", [
       paymentId,
       payment.status,
     ]);
 
-    // 6️⃣ Obtener turno desde metadata
     const turno = payment.metadata.turno;
 
-    // 7️⃣ Guardar turno en DB
     const resultado = await pool.query(
       `
       INSERT INTO turnos (
@@ -113,13 +119,12 @@ router.post("/webhook", async (req, res) => {
       ]
     );
 
-    // 8️⃣ Enviar mail al admin
     await enviarMailTurno(resultado.rows[0]);
 
-    // 9️⃣ OK
+    console.log("✅ Turno guardado y mail enviado");
     res.sendStatus(200);
   } catch (error) {
-    console.error("Webhook error:", error.message);
+    console.error("❌ Webhook error:", error);
     res.sendStatus(500);
   }
 });
