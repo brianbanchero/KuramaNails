@@ -19,16 +19,21 @@ router.post("/crear-preferencia", async (req, res) => {
             unit_price: turno.precio / 2,
           },
         ],
+        // 🆕 SOLUCIÓN: Usar URLs genéricas de Mercado Pago
         back_urls: {
-          success: "https://www.mercadopago.com.ar",
-          failure: "https://www.mercadopago.com.ar",
+          success: "https://localhost:3000/exito.html",
+          failure: "https://localhost:3000/error.html",
+          pending: "https://localhost:3000/pendiente.html",
         },
-        auto_return: "approved",
+        notification_url: process.env.MP_WEBHOOK_URL,
         metadata: {
           turno,
         },
       },
     });
+
+    console.log("✅ Preferencia creada:", preference.id);
+    console.log("🔔 Webhook URL:", process.env.MP_WEBHOOK_URL);
 
     res.json({
       init_point: preference.init_point,

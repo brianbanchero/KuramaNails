@@ -6,164 +6,290 @@
     <link rel="stylesheet" href="CSS/stylesIndex.css" />
   </head>
   <body>
-    <header class="header">
-      <div class="header-center">
-        <img src="assets/img/iconoKurama.png" alt="Kurama Logo" />
+    <header class="navbar">
+      <div class="navbar-container">
+        <!-- IZQUIERDA -->
+        <div class="nav-left">
+          <img src="assets/img/iconoKurama.png" alt="Kurama" class="nav-logo" />
+          <span class="nav-title">Kurama Nails Studio</span>
+        </div>
+
+        <!-- CENTRO -->
+        <nav class="nav-center">
+          <a href="#servicios">Servicios</a>
+          <a href="#galeria">Galería</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+
+        <!-- DERECHA (SOLO ADMIN) -->
+        <div class="nav-right admin-only">
+          <button class="btn-admin">Mis reservas</button>
+        </div>
       </div>
-      <nav>
-        <a href="admin.html" hidden>Admin</a>
-      </nav>
     </header>
 
-    <div class="header-divider"></div>
+    <section class="hero-main">
+      <div class="hero-overlay"></div>
 
-    <main class="layout-principal fade-in">
-      <!-- HERO IZQUIERDO -->
-      <section class="hero hero-lateral">
-        <div class="hero-content">
-          <h2>Uñas perfectas, sin esperas</h2>
-          <p>Reservá tu turno online de forma rápida y sencilla</p>
-        </div>
-      </section>
+      <div class="hero-content">
+        <h1>Eleva tu estilo</h1>
+        <p>
+          Manicura premium en el corazón de la ciudad. Selecciona tu servicio,
+          elegí tu horario, y reservá tu lugar instantáneamente.
+        </p>
 
-      <!-- SERVICIOS DERECHA -->
-      <section class="servicios-columna" id="serviciosContainer">
-        <!-- Cards por JS -->
-      </section>
-    </main>
+        <button class="btn-hero" id="botonComenzar">Comenzar mi reserva</button>
+      </div>
+    </section>
 
-    <!-- OVERLAY -->
-    <div id="overlay" class="overlay oculto">
-      <!-- MODAL -->
-      <div id="modalReserva" class="modalReserva modal oculto">
-        <div class="modal-header">
-          <button id="btnVolver" class="icon-btn oculto">←</button>
-          <button id="cerrarModal" class="icon-btn">✕</button>
+    <section class="step-section" id="paso-servicio">
+      <div class="step-container">
+        <div class="step-header">
+          <span class="step-number">1</span>
+          <h2>Selecciona tu Servicio</h2>
         </div>
 
-        <!-- RESUMEN SERVICIO -->
-        <div class="modal-servicio">
-          <div class="modal-servicio-info">
-            <h3 id="modalServicioNombre">Servicio</h3>
+        <div class="servicios-lista" id="serviciosLista">
+        </div>
+          
+        </div>
+      </div>
+    </section>
 
-            <div class="modal-precio-linea">
-              <strong id="modalServicioPrecio">$0</strong>
-              <span id="modalServicioSenia" class="texto-gris"></span>
-              <span class="texto-gris">
-                · <span class="icono">⏱</span> 90 min
-              </span>
+    <section class="step-section step-hidden" id="paso-fecha">
+      <div class="step-container">
+        <div class="step-header">
+          <span class="step-number">2</span>
+          <h2>Elegí día y horario</h2>
+        </div>
+
+        <div class="calendar-layout">
+          <!-- CALENDARIO -->
+          <div class="calendar-card">
+            <div class="calendar-header">
+              <button id="prevMonth">‹</button>
+              <h3 id="monthLabel"></h3>
+              <button id="nextMonth">›</button>
             </div>
 
-            <!-- Fecha y hora (oculto hasta que se seleccione) -->
-            <div id="modalFechaHora" class="modal-fecha-hora oculto">
-              <span class="icono">📅</span>
-              <span id="modalFechaTexto"></span>
+            <div class="calendar-weekdays">
+              <span>Lu</span><span>Ma</span><span>Mi</span> <span>Ju</span
+              ><span>Vi</span><span>Sá</span><span>Do</span>
             </div>
-          </div>
-        </div>
 
-        <!-- PROFESIONAL -->
-        <div class="modal-section">
-          <h4>Te atiende:</h4>
-
-          <div class="profesionales">
-            <button class="profesional activo">Cielo</button>
-          </div>
-        </div>
-
-        <!-- DÍA -->
-        <div class="modal-section">
-          <div class="modal-dia-header">
-            <h4>¿Qué día?</h4>
-            <div class="mes-control">
-              <button class="flecha" id="prevMes"><</button>
-              <span id="mesActual">Diciembre 2025</span>
-              <button class="flecha" id="nextMes">></button>
-            </div>
+            <div class="calendar-days" id="calendarDays"></div>
           </div>
 
-          <div class="dias-wrapper">
-            <div class="dias-scroll" id="diasScroll">
-              <!-- Días generados por JS -->
+          <!-- HORARIOS -->
+          <div class="time-card">
+            <h3 id="slotsTitle">Horarios disponibles</h3>
+            <div class="time-slots" id="timeSlots"></div>
+
+            <div class="time-notes">
+              <p>* Cada turno es de <span id="duracionServicio"></span></p>
+              <p>* El local cierra a las 15:00</p>
             </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <!-- HORA -->
-        <div class="modal-section">
-          <h4>¿A qué hora?</h4>
+    <!-- PASO 3: DATOS DEL CLIENTE -->
+<section class="step-section step-hidden" id="paso-datos">
+  <div class="step-container">
+    <div class="step-header">
+      <span class="step-number">3</span>
+      <h2>Tus Datos</h2>
+    </div>
 
-          <div class="tabs-hora">
-            <button class="tab-hora activo" data-turno="manana">Mañana</button>
-            <button class="tab-hora" data-turno="tarde">Tarde</button>
+    <div class="form-container">
+      <form id="form-cliente" class="cliente-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nombre">Nombre *</label>
+            <input type="text" id="nombre" name="nombre" required />
           </div>
 
-          <div class="horas-grid" id="horasGrid">
-            <!-- Horarios por JS -->
+          <div class="form-group">
+            <label for="apellido">Apellido *</label>
+            <input type="text" id="apellido" name="apellido" required />
           </div>
-
-          <p id="sinHoras" class="sin-horas oculto">No hay horas disponibles</p>
         </div>
 
-        <div class="modal-footer">
-          <button class="btn-continuar disabled">Continuar</button>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="telefono">Teléfono *</label>
+            <input type="tel" id="telefono" name="telefono" required />
+          </div>
         </div>
 
-        <!-- =====================
-            PASO CONTINUAR
-        ===================== -->
-        <div id="pasoContinuar" class="paso-continuar oculto">
-          <!-- RESUMEN -->
-          <div class="resumen-final">
-            <h4 id="resumenServicio"></h4>
-            <p id="resumenPrecio"></p>
-            <p id="resumenProfesional"></p>
-            <p id="resumenFechaHora"></p>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dni">DNI *</label>
+            <input type="text" id="dni" name="dni" required />
           </div>
 
-          <!-- FORMULARIO -->
-          <div class="form-contacto">
-            <h4>Información de contacto</h4>
-
-            <div class="form-grid">
-              <input type="text" id="nombre" placeholder="Nombre *" />
-              <input type="text" id="apellido" placeholder="Apellido *" />
-              <input type="email" id="email" placeholder="Email *" />
-              <div class="telefono-wrapper">
-                <div class="codigo-pais">
-                  <span class="bandera">🇦🇷</span>
-                  <span class="codigo">+54</span>
-                </div>
-                <input
-                  type="tel"
-                  id="telefono"
-                  placeholder="Teléfono *"
-                  inputmode="numeric"
-                />
-              </div>
-              <input type="text" id="dni" placeholder="DNI *" />
-            </div>
-
-            <textarea
-              id="observaciones"
-              placeholder="Observaciones (opcional)"
-            ></textarea>
+          <div class="form-group">
+            <label for="observaciones">Observaciones (opcional)</label>
+            <textarea id="observaciones" name="observaciones" rows="1"></textarea>
           </div>
+        </div>
 
-          <!-- FOOTER FINAL -->
-          <div class="footer-pago">
-            <div class="footer-resumen" id="footerResumen"></div>
+        <button type="submit" class="btn-continuar">
+          Continuar al pago
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
 
-            <button id="btnPagar" class="btn-pagar disabled">
-              Pagar y agendar
-            </button>
-          </div>
+<!-- PASO 4: RESUMEN Y PAGO -->
+<section class="step-section step-hidden" id="paso-resumen">
+  <div class="step-container">
+    <div class="step-header">
+      <span class="step-number">4</span>
+      <h2>Confirma tu reserva</h2>
+    </div>
+
+    <div class="checkout-container">
+      <div class="booking-summary">
+        <h3>Resumen de tu reserva</h3>
+
+        <hr class="hr-dos">
+
+        <div class="summary-row">
+          <span>Servicio</span>
+          <strong id="summary-service"></strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Fecha</span>
+          <strong id="summary-date"></strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Hora</span>
+          <strong id="summary-time"></strong>
+        </div>
+
+        <hr class="hr-dos">
+
+        <div class="summary-row">
+          <span>Cliente</span>
+          <strong id="summary-cliente"></strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Email</span>
+          <strong id="summary-email"></strong>
+        </div>
+
+        <hr class="hr-dos">
+
+        <div class="summary-row">
+          <span>Precio Total</span>
+          <strong id="summary-total"></strong>
+        </div>
+
+        <div class="summary-row highlight">
+          <span>Depósito Requerido (50%)</span>
+          <strong id="summary-deposit"></strong>
+        </div>
+
+        <p class="deposit-note">* El saldo restante <span id="remaining-amount"></span> se abona al finalizar el turno.</p>
+      </div>
+
+      <div class="payment-box">
+        <div class="payment-icon">💳</div>
+        <h4>Pago vía Mercado Pago</h4>
+        <p>Procesamiento de pagos seguro e instantáneo.</p>
+        <button id="btn-confirmar" type="button">Pagar depósito 🔒</button>
+        <div class="payment-methods">
+          <span>💳</span>
+          <span>🏦</span>
+          <span>📱</span>
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <script src="JS/modalReserva.js"></script>
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-column footer-about">
+      <div class="footer-logo">
+        <span class="logo-icon">👑</span>
+        <h3>Kurama Nails Studio</h3>
+      </div>
+      <p>Servicio de manicuria premium dedicado a tu estilo y bienestar. Ubicado en el corazón de Muñiz.</p>
+    </div>
+
+    <div class="footer-column">
+      <h4>Contacto</h4>
+      <ul class="footer-list">
+        <li>
+          <span class="footer-icon">📍</span>
+          <span>Libertad 568, Departamento 5</span>
+        </li>
+        <li>
+          <span class="footer-icon">📞</span>
+          <span>1176417818</span>
+        </li>
+        <li>
+          <span class="footer-icon">✉️</span>
+          <span>kuramaa.nails@gmail.com</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>Horarios</h4>
+      <ul class="footer-list footer-hours">
+        <li>
+          <span>Lunes - Sabados</span>
+          <strong>9am - 3pm</strong>
+        </li>
+        <li>
+          <span>Domingos</span>
+          <strong>Cerrado</strong>
+        </li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>Politicas</h4>
+      <p class="footer-policy">Las cancelaciones de turnos deben realizarse con al menos 24 horas de anticipación. 
+        El depósito del 50% no es reembolsable en caso de cancelaciones tardías o no presentaciones.</p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 Kurama Nails Studio. Todos los derechos reservados.</p>
+    <div class="footer-social">
+      <a href="#" aria-label="Instagram">📷</a>
+      <a href="#" aria-label="Facebook">👍</a>
+    </div>
+  </div>
+</footer>
+
+    <script src="JS/init.js"></script>
     <script src="JS/servicios.js"></script>
-    <script src="JS/animaciones.js"></script>
+    <script src="JS/date.js"></script>
+    <script src="JS/resumen.js"></script>
+    <script src="JS/formulario.js"></script>
+    <script src="JS/mercadopago.js"></script>
+    <script>
+      // SIMULACIÓN DE ADMIN (luego esto vendrá del backend)
+      const isAdmin = true; // cambiar a false para probar
+
+      if (isAdmin) {
+        document.querySelector(".admin-only").style.display = "flex";
+      }
+    </script>
   </body>
 </html>
