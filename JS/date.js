@@ -1,7 +1,7 @@
 let fechaActual = new Date();
 let duracionServicio = 90;
 let horariosOcupados = [];
-const API_URL = "http://localhost:3000";
+const API_URL = "https://kuramanails-production.up.railway.app/";
 
 if (
   typeof window !== "undefined" &&
@@ -82,11 +82,11 @@ async function seleccionarDia(fecha, el) {
   generarHorarios();
 }
 
-// 🆕 NUEVA FUNCIÓN: Consultar horarios ocupados
+// Consultar horarios ocupados
 async function obtenerHorariosOcupados(fecha) {
   try {
     const fechaFormateada = fecha.toISOString().split("T")[0]; // Formato: YYYY-MM-DD
-    const profesional = "Kurama Nails"; // Puedes hacerlo dinámico si tienes varios profesionales
+    const profesional = "Kurama Nails";
 
     const response = await fetch(
       `${API_URL}/turnos/ocupados?fecha=${fechaFormateada}&profesional=${encodeURIComponent(

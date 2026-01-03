@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "https://kuramanails-production.up.railway.app/";
 
 async function cargarTurnos() {
   const container = document.getElementById("turnos-container");

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "https://kuramanails-production.up.railway.app/";
 
 // Manejar el botón de pago
 document
