@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import turnosRoutes from "./routes/turnos.routes.js";
-import pagosRoutes from "./routes/pagos.routes.js";
+import turnosRoutes from "./src/routes/turnos.routes.js";
+import pagosRoutes from "./src/routes/pagos.routes.js";
 
 const app = express();
 
