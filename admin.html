@@ -1,20 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <title>Panel admin</title>
-  <link rel="stylesheet" href="css/stylesAdmin.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel Admin - Kurama Nails</title>
+    <link rel="stylesheet" href="CSS/stylesAdmin.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>📋 Panel de Administración - Turnos</h1>
 
-  <header class="header">
-    <h1>Panel de turnos</h1>
-  </header>
+      <div class="stats">
+        <div class="stat-card">
+          <h3 id="total-turnos">0</h3>
+          <p>Turnos totales</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="turnos-hoy">0</h3>
+          <p>Turnos hoy</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="ingresos-mes">$0</h3>
+          <p>Ingresos del mes</p>
+        </div>
+      </div>
 
-  <main class="container">
-    <ul id="listaTurnos" class="lista-turnos"></ul>
-  </main>
+      <div class="filters">
+        <input type="date" id="filtro-fecha" />
+        <select id="filtro-servicio">
+          <option value="">Todos los servicios</option>
+          <option value="Soft Gel">Soft Gel</option>
+          <option value="Capping">Capping</option>
+          <option value="Esmaltado Semipermanente">
+            Esmaltado Semipermanente
+          </option>
+        </select>
+        <button onclick="cargarTurnos()">🔍 Filtrar</button>
+        <button onclick="limpiarFiltros()">🔄 Limpiar</button>
+      </div>
 
-  <script type="module" src="js/admin.js"></script>
-</body>
+      <div class="turnos-grid" id="turnos-container">
+        <div class="loading">Cargando turnos...</div>
+      </div>
+    </div>
+
+    <script src="JS/admin.js"></script>
+  </body>
 </html>

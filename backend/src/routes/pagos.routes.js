@@ -21,10 +21,11 @@ router.post("/crear-preferencia", async (req, res) => {
         ],
         // 🆕 SOLUCIÓN: Usar URLs genéricas de Mercado Pago
         back_urls: {
-          success: "https://localhost:3000/exito.html",
-          failure: "https://localhost:3000/error.html",
-          pending: "https://localhost:3000/pendiente.html",
+          success: "https://brianbanchero.github.io/KuramaNails/exito.html",
+          failure: "https://brianbanchero.github.io/KuramaNails/error.html",
+          pending: "https://brianbanchero.github.io/KuramaNails/pendiente.html",
         },
+        auto_return: "approved",
         notification_url: process.env.MP_WEBHOOK_URL,
         metadata: {
           turno,

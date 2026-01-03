@@ -4,6 +4,48 @@ import { enviarMailTurno } from "../email.js";
 
 const router = express.Router();
 
+// Obtener todos los turnos
+router.get("/", async (req, res) => {
+  try {
+    const { fecha, servicio } = req.query;
+
+    let query = "SELECT * FROM turnos WHERE 1=1";
+    const params = [];
+
+    if (fecha) {
+      params.push(fecha);
+      query += ` AND fecha = $${params.length}`;
+    }
+
+    if (servicio) {
+      params.push(servicio);
+      query += ` AND servicio = $${params.length}`;
+    }
+
+    query += " ORDER BY fecha DESC, hora DESC";
+
+    const result = await pool.query(query, params);
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error interno" });
+  }
+});
+
+// Eliminar turno
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await pool.query("DELETE FROM turnos WHERE id = $1", [id]);
+
+    res.json({ mensaje: "Turno eliminado correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al eliminar turno" });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const {

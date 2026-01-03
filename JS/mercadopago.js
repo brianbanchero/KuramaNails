@@ -1,3 +1,5 @@
+const API_URL = "http://localhost:3000";
+
 // Manejar el botón de pago
 document
   .getElementById("btn-confirmar")
@@ -54,16 +56,13 @@ document
       console.log("Creando preferencia de pago con:", turnoData);
 
       // Llamar al backend para crear la preferencia de Mercado Pago
-      const response = await fetch(
-        "http://localhost:3000/pagos/crear-preferencia",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ turno: turnoData }),
-        }
-      );
+      const response = await fetch(`${API_URL}/pagos/crear-preferencia`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ turno: turnoData }),
+      });
 
       if (!response.ok) {
         throw new Error("Error al crear la preferencia de pago");

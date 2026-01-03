@@ -5,7 +5,19 @@ import pagosRoutes from "./routes/pagos.routes.js";
 
 const app = express();
 
-app.use(cors());
+// 🆕 CORS configurado para producción
+app.use(
+  cors({
+    origin: [
+      "https://tu-usuario.github.io", // Tu GitHub Pages
+      "http://localhost:5501", // Para desarrollo local
+      "http://127.0.0.1:5501",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json());
 app.use("/turnos", turnosRoutes);
 app.use("/pagos", pagosRoutes);
@@ -16,5 +28,5 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor escuchando en puerto ${PORT}`);
+  console.log(`🚀 Servidor escuchando en puerto ${PORT}`);
 });

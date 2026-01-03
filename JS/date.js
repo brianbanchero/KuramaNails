@@ -1,8 +1,8 @@
 let fechaActual = new Date();
 let duracionServicio = 90;
-let horariosOcupados = []; // Array para almacenar horarios ocupados
+let horariosOcupados = [];
+const API_URL = "http://localhost:3000";
 
-// Si otro script establece la duración, usarla desde `window`
 if (
   typeof window !== "undefined" &&
   typeof window.duracionServicio === "number"
@@ -89,7 +89,7 @@ async function obtenerHorariosOcupados(fecha) {
     const profesional = "Kurama Nails"; // Puedes hacerlo dinámico si tienes varios profesionales
 
     const response = await fetch(
-      `http://localhost:3000/turnos/ocupados?fecha=${fechaFormateada}&profesional=${encodeURIComponent(
+      `${API_URL}/turnos/ocupados?fecha=${fechaFormateada}&profesional=${encodeURIComponent(
         profesional
       )}`
     );
