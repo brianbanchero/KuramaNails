@@ -10,7 +10,7 @@ const serviciosBackend = [
   {
     id: 2,
     nombre: "Capping",
-    precio: 16000,
+    precio: 100,
     duracion: 90,
     ultimoTurno: "15:00",
     imagen: "/assets/img/capping.jpeg",
