@@ -9,7 +9,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://tu-usuario.github.io", // Tu GitHub Pages
+      "https://brianbanchero.github.io/KuramaNails/", // Tu GitHub Pages
       "http://localhost:5501", // Para desarrollo local
       "http://127.0.0.1:5501",
     ],
