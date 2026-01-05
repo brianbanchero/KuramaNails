@@ -5,7 +5,7 @@ const serviciosBackend = [
     precio: 19000,
     duracion: 90,
     ultimoTurno: "13:30",
-    imagen: "/assets/img/soft-gel.jpeg",
+    imagen: "./assets/img/soft-gel.jpeg",
   },
   {
     id: 2,
@@ -13,7 +13,7 @@ const serviciosBackend = [
     precio: 100,
     duracion: 90,
     ultimoTurno: "15:00",
-    imagen: "/assets/img/capping.jpeg",
+    imagen: "./assets/img/capping.jpeg",
   },
   {
     id: 3,
@@ -21,7 +21,7 @@ const serviciosBackend = [
     precio: 23000,
     duracion: 90,
     ultimoTurno: "15:00",
-    imagen: "/assets/img/semipermanentes.jpeg",
+    imagen: "./assets/img/semipermanentes.jpeg",
   },
 ];
 

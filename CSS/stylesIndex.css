@@ -135,7 +135,7 @@ body {
   position: relative;
   width: 100%;
   height: 60vh;
-  background: url("/assets/img/fondoHero.jpeg") center / cover no-repeat;
+  background: url("./assets/img/fondoHero.jpeg") center / cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
