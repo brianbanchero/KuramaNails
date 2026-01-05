@@ -1,14 +1,23 @@
 import express from "express";
-import { preferenceClient } from "../mercadopago.js";
+import { preferenceClient } from "../src/mercadopago.js";
 import axios from "axios";
-import pool from "../db.js";
-import { enviarMailTurno } from "../email.js";
+import pool from "../src/db.js";
+import { enviarMailTurno } from "../src/email.js";
 
 const router = express.Router();
 
 router.post("/crear-preferencia", async (req, res) => {
   try {
+    console.log("📥 Request recibido:", req.body);
+
     const { turno } = req.body;
+
+    if (!turno) {
+      console.log("❌ No se recibió el objeto turno");
+      return res.status(400).json({ error: "Faltan datos del turno" });
+    }
+
+    console.log("📝 Creando preferencia para:", turno.servicio);
 
     const preference = await preferenceClient.create({
       body: {
@@ -19,7 +28,6 @@ router.post("/crear-preferencia", async (req, res) => {
             unit_price: turno.precio / 2,
           },
         ],
-        // 🆕 SOLUCIÓN: Usar URLs genéricas de Mercado Pago
         back_urls: {
           success: "https://brianbanchero.github.io/KuramaNails/exito.html",
           failure: "https://brianbanchero.github.io/KuramaNails/error.html",
@@ -27,8 +35,20 @@ router.post("/crear-preferencia", async (req, res) => {
         },
         auto_return: "approved",
         notification_url: process.env.MP_WEBHOOK_URL,
+        // 🆕 CAMBIO IMPORTANTE: Enviar metadata como pares clave-valor
         metadata: {
-          turno,
+          servicio: turno.servicio,
+          precio: turno.precio.toString(),
+          duracion: turno.duracion.toString(),
+          profesional: turno.profesional,
+          fecha: turno.fecha,
+          hora: turno.hora,
+          nombre: turno.nombre,
+          apellido: turno.apellido,
+          email: turno.email,
+          telefono: turno.telefono,
+          dni: turno.dni,
+          observaciones: turno.observaciones || "",
         },
       },
     });
@@ -40,8 +60,12 @@ router.post("/crear-preferencia", async (req, res) => {
       init_point: preference.init_point,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error creando pago" });
+    console.error("❌ Error en crear-preferencia:", error.message);
+    console.error("Detalle completo:", error);
+    res.status(500).json({
+      error: "Error creando pago",
+      detalle: error.message,
+    });
   }
 });
 
@@ -71,6 +95,7 @@ router.post("/webhook", async (req, res) => {
 
       payment = mpResponse.data;
       console.log("💳 Pago consultado:", payment.status);
+      console.log("📦 Metadata recibido:", payment.metadata); // 🆕 Ver qué metadata llega
     } catch (err) {
       console.log("⏳ Pago aún no disponible, reintentando:", paymentId);
       return res.sendStatus(500);
@@ -97,7 +122,16 @@ router.post("/webhook", async (req, res) => {
       payment.status,
     ]);
 
-    const turno = payment.metadata.turno;
+    // 🆕 Los datos ahora vienen directamente en metadata, no en metadata.turno
+    const turno = payment.metadata;
+
+    // 🆕 Validar que los datos existan
+    if (!turno.servicio || !turno.fecha || !turno.hora) {
+      console.error("❌ Metadata incompleto:", turno);
+      return res.sendStatus(500);
+    }
+
+    console.log("💾 Guardando turno:", turno);
 
     const resultado = await pool.query(
       `
@@ -111,8 +145,8 @@ router.post("/webhook", async (req, res) => {
       `,
       [
         turno.servicio,
-        turno.precio,
-        turno.duracion,
+        parseFloat(turno.precio), // 🆕 Convertir de string a número
+        parseInt(turno.duracion), // 🆕 Convertir de string a número
         turno.profesional,
         turno.fecha,
         turno.hora,
