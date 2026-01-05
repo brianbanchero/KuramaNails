@@ -1,8 +1,8 @@
 import express from "express";
-import { preferenceClient } from "../src/mercadopago.js";
+import { preferenceClient } from "../mercadopago.js";
 import axios from "axios";
-import pool from "../src/db.js";
-import { enviarMailTurno } from "../src/email.js";
+import pool from "../db.js";
+import { enviarMailTurno } from "../email.js";
 
 const router = express.Router();
 
