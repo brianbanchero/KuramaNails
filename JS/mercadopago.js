@@ -67,20 +67,20 @@ document
       }
 
       const data = await response.json();
+      console.log("📥 Response data:", data);
 
-      console.log("Preferencia creada:", data);
-
-      // Redirigir a Mercado Pago
       if (data.init_point) {
+        console.log("✅ Redirigiendo a:", data.init_point);
         window.location.href = data.init_point;
       } else {
         throw new Error("No se recibió el link de pago");
       }
     } catch (error) {
-      console.error("Error al procesar el pago:", error);
-      alert("Hubo un error al procesar tu pago. Por favor intenta nuevamente.");
+      console.error("❌ Error completo:", error);
+      alert(
+        `Hubo un error al procesar tu pago: ${error.message}\n\nPor favor intenta nuevamente.`
+      );
 
-      // Rehabilitar botón
       btnConfirmar.disabled = false;
       btnConfirmar.textContent = `Pagar $${(
         window.servicioSeleccionado.precio / 2
