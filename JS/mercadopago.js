@@ -1,5 +1,3 @@
-const API_URL = "https://kuramanails-production.up.railway.app/";
-
 // Manejar el botón de pago
 document
   .getElementById("btn-confirmar")

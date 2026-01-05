@@ -1,7 +1,6 @@
 let fechaActual = new Date();
 let duracionServicio = 90;
 let horariosOcupados = [];
-const API_URL = "https://kuramanails-production.up.railway.app/";
 
 if (
   typeof window !== "undefined" &&

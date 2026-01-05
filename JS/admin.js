@@ -1,5 +1,3 @@
-const API_URL = "https://kuramanails-production.up.railway.app/";
-
 async function cargarTurnos() {
   const container = document.getElementById("turnos-container");
   container.innerHTML = '<div class="loading">Cargando turnos...</div>';
